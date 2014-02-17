@@ -17,6 +17,8 @@
     <OctoPackImported>true</OctoPackImported>
 
     <RunOctoPack Condition="'$(RunOctoPack)'==''">false</RunOctoPack>
+    <RunOctoCreate Condition="'$(RunOctoCreate)'==''">false</RunOctoCreate>
+    
     <OctoPackIncludeTypeScriptSourceFiles Condition="'$(OctoPackIncludeTypeScriptSourceFiles)'==''">false</OctoPackIncludeTypeScriptSourceFiles>
     <OctoPackNuSpecFileName Condition="'$(OctoPackNuSpecFileName)' == ''"></OctoPackNuSpecFileName>
     <OctoPackReleaseNotesFile Condition="'$(OctoPackReleaseNotesFile)' == ''"></OctoPackReleaseNotesFile>
@@ -29,6 +31,11 @@
     <OctoPackNugetProperties Condition="'$(OctoPackNuGetProperties)' == ''"></OctoPackNugetProperties>
     <OctoPackEnforceAddingFiles Condition="'$(OctoPackEnforceAddingFiles)' == ''">false</OctoPackEnforceAddingFiles>
     <OctoPackNuGetPushProperties Condition="'$(OctoPackNuGetPushProperties)' == ''"></OctoPackNuGetPushProperties>
+    <OctoPackOctoExePath Condition="'$(OctoPackOctoExePath)' == ''"></OctoPackOctoExePath>
+    <OctoPackOctopusServer Condition="'$(OctoPackOctopusServer)' == ''"></OctoPackOctopusServer>
+    <OctoPackOctopusApiKey Condition="'$(OctoPackOctopusApiKey)' == ''"></OctoPackOctopusApiKey>     
+    <OctoPackOctopusProject Condition="'$(OctoPackOctopusProject)' == ''"></OctoPackOctopusProject>
+    <OctoPackOctopusDeployTo Condition="'$(OctoPackOctopusDeployTo)' == ''"></OctoPackOctopusDeployTo>
   </PropertyGroup>
 
   <!-- 
@@ -81,6 +88,7 @@
       >
       <Output TaskParameter="Packages" ItemName="OctoPackBuiltPackages" />
       <Output TaskParameter="NuGetExePath" PropertyName="OctoPackNuGetExePath" />
+      <Output TaskParameter="OctoExePath" PropertyName="OctoPackOctoExePath" /> 
     </CreateOctoPackPackage>
 
     <Message Text="Built package: @(OctoPackBuiltPackages)" Importance="Low" />
@@ -91,6 +99,12 @@
 
     <Message Text="Publish to repository: $(OctoPackPublishPackageToHttp)" Condition="'$(OctoPackPublishPackageToHttp)' != ''" Importance="Normal" />
     <Exec Command='"$(OctoPackNuGetExePath)" push "@(OctoPackBuiltPackages)" $(OctoPackPublishApiKey) -s $(OctoPackPublishPackageToHttp) $(OctoPackNuGetPushProperties)' Condition="'$(OctoPackPublishPackageToHttp)' != ''" />
-    
+
+    <Message Text="Create release for server: $(OctoPackOctopusServer) - project: $(OctoPackOctopusProject)" Condition="'$(RunOctoCreate) And '$(OctoPackOctopusDeployTo)' == ''" Importance="Normal" />
+    <Exec Command='"$(OctoPackOctoExePath)" create-release --packageversion="$(OctoPackPackageVersion)" --server="$(OctoPackOctopusServer)" --project="$(OctoPackOctopusProject)" --apikey="$(OctoPackOctopusApiKey)"'  Condition="'$(RunOctoCreate) And '$(OctoPackOctopusDeployTo)' == ''" />
+
+    <Message Text="Create and deploy release for server: $(OctoPackOctopusServer) - project: $(OctoPackOctopusProject) - to: $(OctoPackOctopusDeployTo)" Condition="'$(RunOctoCreate) And '$(OctoPackOctopusDeployTo)' != ''" Importance="Normal" />
+    <Exec Command='"$(OctoPackOctoExePath)" create-release --packageversion="$(OctoPackPackageVersion)" --server="$(OctoPackOctopusServer)" --project="$(OctoPackOctopusProject)" --apikey="$(OctoPackOctopusApiKey)" --deployto="$(OctoPackOctopusDeployTo)"' Condition="'$(RunOctoCreate) And '$(OctoPackOctopusDeployTo)' != ''" />
+
   </Target>
 </Project>

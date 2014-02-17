@@ -100,6 +100,9 @@ namespace OctoPack.Tasks
         [Output]
         public string NuGetExePath { get; set; }
 
+        [Output]
+        public string OctoExePath { get; set; }
+
 
         public bool EnforceAddingFiles { get; set; }
 
@@ -121,6 +124,7 @@ namespace OctoPack.Tasks
                 LogDiagnostics();
 
                 FindNuGet();
+                FindOcto();
 
                 WrittenFiles = WrittenFiles ?? new ITaskItem[0];
                 LogMessage("Written files: " + WrittenFiles.Length);
@@ -429,6 +433,15 @@ namespace OctoPack.Tasks
             {
                 var nuGetPath = Path.Combine(Path.GetDirectoryName(typeof(CreateOctoPackPackage).Assembly.FullLocalPath()), "NuGet.exe");
                 NuGetExePath = nuGetPath;
+            }
+        }
+
+        private void FindOcto()
+        {
+            if (string.IsNullOrWhiteSpace(OctoExePath) || !fileSystem.FileExists(OctoExePath))
+            {
+                var octoExePath = Path.Combine(Path.GetDirectoryName(typeof(CreateOctoPackPackage).Assembly.FullLocalPath()), "Octo.exe");
+                OctoExePath = octoExePath;
             }
         }
 
