@@ -100,11 +100,11 @@
     <Message Text="Publish to repository: $(OctoPackPublishPackageToHttp)" Condition="'$(OctoPackPublishPackageToHttp)' != ''" Importance="Normal" />
     <Exec Command='"$(OctoPackNuGetExePath)" push "@(OctoPackBuiltPackages)" $(OctoPackPublishApiKey) -s $(OctoPackPublishPackageToHttp) $(OctoPackNuGetPushProperties)' Condition="'$(OctoPackPublishPackageToHttp)' != ''" />
 
-    <Message Text="Create release for server: $(OctoPackOctopusServer) - project: $(OctoPackOctopusProject)" Condition="'$(RunOctoCreate) And '$(OctoPackOctopusDeployTo)' == ''" Importance="Normal" />
-    <Exec Command='"$(OctoPackOctoExePath)" create-release --packageversion="$(OctoPackPackageVersion)" --server="$(OctoPackOctopusServer)" --project="$(OctoPackOctopusProject)" --apikey="$(OctoPackOctopusApiKey)"'  Condition="'$(RunOctoCreate) And '$(OctoPackOctopusDeployTo)' == ''" />
+    <Message Text="Create release for server: $(OctoPackOctopusServer) - project: $(OctoPackOctopusProject)" Condition="'$(RunOctoCreate)' == 'true' And '$(OctoPackOctopusDeployTo)' == ''" Importance="Normal" />
+    <Exec Command='"$(OctoPackOctoExePath)" create-release --packageversion="$(OctoPackPackageVersion)" --server="$(OctoPackOctopusServer)" --project="$(OctoPackOctopusProject)" --apikey="$(OctoPackOctopusApiKey)"'  Condition="'$(RunOctoCreate)' == 'true' And '$(OctoPackOctopusDeployTo)' == ''" />
 
-    <Message Text="Create and deploy release for server: $(OctoPackOctopusServer) - project: $(OctoPackOctopusProject) - to: $(OctoPackOctopusDeployTo)" Condition="'$(RunOctoCreate) And '$(OctoPackOctopusDeployTo)' != ''" Importance="Normal" />
-    <Exec Command='"$(OctoPackOctoExePath)" create-release --packageversion="$(OctoPackPackageVersion)" --server="$(OctoPackOctopusServer)" --project="$(OctoPackOctopusProject)" --apikey="$(OctoPackOctopusApiKey)" --deployto="$(OctoPackOctopusDeployTo)"' Condition="'$(RunOctoCreate) And '$(OctoPackOctopusDeployTo)' != ''" />
+    <Message Text="Create and deploy release for server: $(OctoPackOctopusServer) - project: $(OctoPackOctopusProject) - to: $(OctoPackOctopusDeployTo)" Condition="'$(RunOctoCreate)' == 'true' And '$(OctoPackOctopusDeployTo)' != ''" Importance="Normal" />
+    <Exec Command='"$(OctoPackOctoExePath)" create-release --packageversion="$(OctoPackPackageVersion)" --server="$(OctoPackOctopusServer)" --project="$(OctoPackOctopusProject)" --apikey="$(OctoPackOctopusApiKey)" --deployto="$(OctoPackOctopusDeployTo)"' Condition="'$(RunOctoCreate)' == 'true' And '$(OctoPackOctopusDeployTo)' != ''" />
 
   </Target>
 </Project>
